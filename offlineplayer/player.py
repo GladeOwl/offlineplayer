@@ -33,7 +33,7 @@ class Player:
             while self.play_obj.is_playing():
                 elapsed_time = time.time() - self.start_time
                 progress.update(task, completed=elapsed_time)
-                time.sleep(0.1)
+                time.sleep(1)
 
 
 if __name__ == "__main__":
