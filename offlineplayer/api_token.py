@@ -9,11 +9,31 @@ load_dotenv()
 
 class Token:
     def __init__(self) -> None:
-        self.access_token: str
-        self.token_type: str
-        self.expires_in: int
+        self.token: str = None
+        self.access_token: str = None
+        self.token_type: str = None
+        self.expires_in: int = None
 
-    def get_token(self) -> None:
+    @property
+    def token(self) -> str:
+        token = self.get_local_token()
+        if not token:
+            token = self.get_new_token()
+
+        return token
+
+    @token.setter
+    def token(self, value: str) -> None:
+        self._token = value
+
+    def get_local_token(self) -> str:
+        with open("token.json", "r") as jsonf:
+            local_token: dict = json.load(jsonf)
+            if local_token["timestamp"] + local_token["expires_in"] < time.time():
+                return None
+            return local_token["access_token"]
+
+    def get_new_token(self) -> str:
         url: str = "https://accounts.spotify.com/api/token"
         headers: dict = {"Content-Type": "application/x-www-form-urlencoded"}
         data: dict = {
@@ -33,5 +53,7 @@ class Token:
         with open("token.json", "w+") as jsonf:
             json.dump(token_json, jsonf)
 
+        return token_json["access_token"]
 
-token = Token().get_token()
+
+TOKEN = Token()
