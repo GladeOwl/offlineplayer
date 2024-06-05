@@ -27,6 +27,8 @@ class Token:
         self._token = value
 
     def get_local_token(self) -> str:
+        if not os.path.exists("./token.json"):
+            return None
         with open("token.json", "r") as jsonf:
             local_token: dict = json.load(jsonf)
             if local_token["timestamp"] + local_token["expires_in"] < time.time():

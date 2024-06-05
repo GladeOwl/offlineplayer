@@ -12,6 +12,7 @@ python-dotenv = "^1.0.1"
 pydub = "^0.25.1"
 simpleaudio = "^1.0.4"
 rich = {extras = ["all"], version = "^13.7.1"}
+xmltodict = "^0.13.0"
 
 
 [build-system]
