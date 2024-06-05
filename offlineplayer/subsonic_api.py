@@ -4,6 +4,7 @@ import string
 import hashlib
 import requests
 import xmltodict
+import json
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -16,6 +17,12 @@ class Subsonic:
         )
         self.now: str = "getNowPlaying"
         self.get_song: str = "getSong"
+
+    def is_playing(self) -> bool:
+        now_playing: dict = self.get_api(self.now, "")
+        if not now_playing["subsonic-response"]["nowPlaying"]:
+            return False
+        return True
 
     def get_song_info(self) -> dict:
         now_playing: dict = self.get_api(self.now, "")
@@ -48,8 +55,9 @@ class Subsonic:
         )
 
         data: dict = xmltodict.parse(response.text)
+        with open("test.json", "w") as jsonf:
+            json.dump(data, jsonf, indent=4)
         return data
 
 
-sub = Subsonic()
-print(sub.get_song_info())
+SUBSONIC = Subsonic()

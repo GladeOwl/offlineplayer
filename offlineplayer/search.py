@@ -15,20 +15,22 @@ class Search:
         data: dict = {"track": self.track, "artist": self.artist, "album": self.album}
         return urllib.parse.urlencode(data)
 
-    def search(self) -> None:
+    def search(self) -> dict:
         url: str = "https://api.spotify.com/v1/search"
         headers: dict = {"Authorization": f"Bearer {TOKEN.token}"}
         params: dict = {"q": self.encode_params(), "type": self.type, "limit": 2}
         response: requests.Response = requests.get(url, headers=headers, params=params)
-        print(response.url)
+
         with open("search.json", "w") as jsonf:
             json.dump(response.json(), jsonf, indent=4)
 
+        return response.json()
 
-search = Search(
-    track="King",
-    artist="Lauren Aquilina",
-    album="Fools",
-    type="track",
-)
-search.search()
+
+# search = Search(
+#     track="King",
+#     artist="Lauren Aquilina",
+#     album="Fools",
+#     type="track",
+# )
+# search.search()
