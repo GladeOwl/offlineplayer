@@ -1,7 +1,8 @@
 import requests
 import urllib
 import json
-from api_token import TOKEN
+
+from helper import api_get
 
 
 class Search:
@@ -16,21 +17,10 @@ class Search:
         return urllib.parse.urlencode(data)
 
     def search(self) -> dict:
-        url: str = "https://api.spotify.com/v1/search"
-        headers: dict = {"Authorization": f"Bearer {TOKEN.token}"}
         params: dict = {"q": self.encode_params(), "type": self.type, "limit": 2}
-        response: requests.Response = requests.get(url, headers=headers, params=params)
+        response: requests.Response = api_get(endpoint="search", params=params)
 
         with open("search.json", "w") as jsonf:
             json.dump(response.json(), jsonf, indent=4)
 
         return response.json()
-
-
-# search = Search(
-#     track="King",
-#     artist="Lauren Aquilina",
-#     album="Fools",
-#     type="track",
-# )
-# search.search()

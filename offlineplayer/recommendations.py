@@ -2,9 +2,9 @@ import logging
 import requests
 import json
 
+from helper import api_get
 from search import Search
 from subsonic_api import SUBSONIC
-from api_token import TOKEN
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(
@@ -76,15 +76,12 @@ class Recommendations:
     def get_recommendations(self, search_data: dict) -> None:
         logging.info(f"Looking for recommendations")
 
-        url: str = "https://api.spotify.com/v1/recommendations"
-        headers: dict = {"Authorization": f"Bearer {TOKEN.token}"}
         params: dict = {
             "seed_tracks": search_data["song_id"],
             "seed_artists": search_data["artists_id"],
             "seed_genres": "neo-singer-songwriter",
         }
-
-        response: requests.Response = requests.get(url, headers=headers, params=params)
+        response: requests.Response = api_get(endpoint="recommendations", params=params)
 
         with open("rec.json", "w") as jsonf:
             json.dump(response.json(), jsonf, indent=4)
