@@ -32,7 +32,7 @@ class Recommendations:
 
         genres: str = self.get_genres(search_data["album_id"])
 
-        recommendations: dict = self.get_recommendations(search_data)
+        recommendations: dict = self.get_recommendations(search_data, genres)
         self.parse_recommendations(recommendations)
 
     def is_song_starred(self, song_info: dict) -> bool:
@@ -58,17 +58,21 @@ class Recommendations:
 
         return search.search(song=self.song)
 
-    def get_genres(self, id: str) -> dict:
-        params: dict = {"id": id}
-        response: requests.Response = api_get(endpoint="albums", params=params)
+    def get_genres(self, id: str) -> str:
+        endpoint: str = "albums/" + id
+        response: requests.Response = api_get(endpoint=endpoint, params={})
+        with open("album.json", "w+") as jsonf:
+            json.dump(response.json(), jsonf)
 
-    def get_recommendations(self, search_data: dict) -> dict:
-        logging.info(f"Looking for recommendations")
+        return ",".join(response.json()["genres"])
+
+    def get_recommendations(self, search_data: dict, genres: str) -> dict:
+        logging.info(f"Looking for recommendations. Genres: {genres}")
 
         params: dict = {
             "seed_tracks": search_data["song_id"],
             "seed_artists": search_data["artists_id"],
-            "seed_genres": "neo-singer-songwriter",
+            "seed_genres": genres,
         }
         response: requests.Response = api_get(endpoint="recommendations", params=params)
 
