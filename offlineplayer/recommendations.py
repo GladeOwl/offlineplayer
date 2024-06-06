@@ -5,18 +5,12 @@ import json
 from helper import api_get
 from search import Search
 from subsonic_api import SUBSONIC
+from song import Song
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(
     filename="recommendations.log", encoding="utf-8", level=logging.INFO
 )
-
-
-class Song:
-    id: str
-    name: str
-    album: str
-    artist: str
 
 
 class Recommendations:
@@ -35,6 +29,8 @@ class Recommendations:
 
         self.song = self.create_song(song_info)
         search_data: dict = self.search_song()
+
+        genres: str = self.get_genres(search_data["album_id"])
 
         recommendations: dict = self.get_recommendations(search_data)
         self.parse_recommendations(recommendations)
@@ -60,20 +56,13 @@ class Recommendations:
             type="track",
         )
 
-        search_response: dict = search.search()
+        return search.search(song=self.song)
 
-        for song in search_response["tracks"]["items"]:
-            if (
-                song["name"].lower() == self.song.name.lower()
-                and song["album"]["name"].lower() == self.song.album.lower()
-            ):
-                logging.info(f"Found Song on Spotify:")
-                logging.info(
-                    f"Local - {self.song.name} by {self.song.artist} :: Spotify - {song['name']} by {song['artists'][0]['name']} :: {song['external_urls']['spotify']}"
-                )
-                return {"song_id": song["id"], "artists_id": song["artists"][0]["id"]}
+    def get_genres(self, id: str) -> dict:
+        params: dict = {"id": id}
+        response: requests.Response = api_get(endpoint="albums", params=params)
 
-    def get_recommendations(self, search_data: dict) -> None:
+    def get_recommendations(self, search_data: dict) -> dict:
         logging.info(f"Looking for recommendations")
 
         params: dict = {
