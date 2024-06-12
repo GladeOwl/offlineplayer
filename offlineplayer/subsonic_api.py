@@ -5,9 +5,12 @@ import hashlib
 import requests
 import xmltodict
 import json
+import logging
 from dotenv import load_dotenv
 
 load_dotenv()
+
+logger = logging.getLogger("reccy")
 
 
 class Subsonic:

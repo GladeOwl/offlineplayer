@@ -3,3 +3,4 @@ class Song:
     name: str
     album: str
     artist: str
+    type: str
