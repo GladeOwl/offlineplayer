@@ -5,7 +5,7 @@ from moviepy import editor
 
 import mutagen
 from mutagen.easyid3 import EasyID3
-from mutagen.id3 import ID3, TIT2, TPE1, TALB, ID3NoHeaderError
+from mutagen.id3 import ID3NoHeaderError
 
 from youtube_search import YoutubeSearch
 from pytube import YouTube
@@ -30,7 +30,7 @@ class Downloader:
             song_path: str = f"./{PATH}/{song_name}.mp4"
 
             self.convert_mp4_to_mp3(file_path=song_path)
-            self.add_file_metadata(song=song)
+            # self.add_file_metadata(song=song)
 
     def search_song(self, song: str) -> str:
         search_string: str = f"{song['name']} {song['artist']}"
