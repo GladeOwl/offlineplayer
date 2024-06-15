@@ -1,6 +1,8 @@
+import os
 import logging
 import requests
 import json
+from time import time
 
 from helper import api_get
 from search import Search
@@ -35,6 +37,8 @@ class Recommendations:
         genres: str = self.get_genres(search_data["album_id"])
 
         recommendations: dict = self.get_rec_from_api(search_data, genres)
+
+        self.make_note_of_song(search_data)
         return self.parse_recommendations(recommendations)
 
     def is_song_starred(self, song_info: dict) -> bool:
@@ -52,7 +56,10 @@ class Recommendations:
     def search_song(self) -> dict:
         logging.info(f"Looking for '{self.song.name}' on Spotify:")
         search: Search = Search(self.song)
-        return search.search()
+        search_data: dict = search.search()
+        self.song.id = search_data["song_id"]
+
+        return search_data
 
     def get_genres(self, id: str) -> str:
         endpoint: str = "albums/" + id
@@ -92,3 +99,32 @@ class Recommendations:
             }
             rec_list.append(song_data)
         return rec_list
+
+    def make_note_of_song(self, search_data: dict) -> None:
+        note: dict = {
+            "name": self.song.name,
+            "id": self.song.id,
+            "album": {"name": self.song.album, "id": search_data["album_id"]},
+            "artist": {"name": self.song.artist, "id": search_data["artists_id"]},
+            "last_recommended": time(),
+        }
+
+        if os.path.getsize("history.json") == 0:
+            history: dict = {"recommends": [note]}
+            with open("history.json", "w+") as jsonf:
+                json.dump(history, jsonf, indent=4)
+            return
+
+        with open("history.json", "w") as jsonf:
+            history: dict = json.load(jsonf)
+
+            found_note: bool = False
+            for _note in history["recommends"]:
+                if _note["name"] == self.song.name:
+                    _note = note
+                    found_note = True
+
+            if not found_note:
+                history["recommends"].append(note)
+
+            json.dump(history, jsonf, indent=4)
