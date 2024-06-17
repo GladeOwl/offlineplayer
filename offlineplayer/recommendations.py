@@ -109,22 +109,20 @@ class Recommendations:
             "last_recommended": time(),
         }
 
-        if os.path.getsize("history.json") == 0:
-            history: dict = {"recommends": [note]}
-            with open("history.json", "w+") as jsonf:
-                json.dump(history, jsonf, indent=4)
-            return
+        with open("history.json", "w+") as jsonf:
+            if os.path.getsize("history.json") == 0:
+                json.dump([note], jsonf, indent=4)
+                return
 
-        with open("history.json", "w") as jsonf:
-            history: dict = json.load(jsonf)
+            history: list = json.load(jsonf)
 
             found_note: bool = False
-            for _note in history["recommends"]:
+            for _note in history:
                 if _note["name"] == self.song.name:
                     _note = note
                     found_note = True
 
             if not found_note:
-                history["recommends"].append(note)
+                history.append(note)
 
             json.dump(history, jsonf, indent=4)
