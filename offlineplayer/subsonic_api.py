@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-logger = logging.getLogger("reccy")
+LOGGER = logging.getLogger("reccy")
 
 
 class Subsonic:

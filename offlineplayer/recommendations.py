@@ -9,7 +9,7 @@ from search import Search
 from subsonic_api import SUBSONIC
 from song import Song
 
-logger = logging.getLogger("reccy")
+LOGGER = logging.getLogger("reccy")
 
 
 class Recommendations:

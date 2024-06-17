@@ -6,7 +6,7 @@ import logging
 from helper import api_get
 from song import Song
 
-logger = logging.getLogger("reccy")
+LOGGER = logging.getLogger("reccy")
 
 
 class Search:
