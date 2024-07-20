@@ -15,9 +15,7 @@ services:
   reccy:
     container_name: reccy
     build:
-      context: https://github.com/GladeOwl/offlineplayer.git
-      args:
-        - SSH_PRIVATE_KEY=${SSH_PRIVATE_KEY}
+      context: .
     depends_on:
       - navidrome
     env_file:
