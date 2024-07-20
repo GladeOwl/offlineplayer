@@ -5,9 +5,9 @@ services:
     container_name: navidrome
     user: 1000:1000 # should be owner of volumes
     ports:
-      - "8081:4533"
+      - "8085:4533" # TODO: change to 8081 when ready
     environment:
-      ND_BASEURL: "https://music.glade.nest"
+      ND_BASEURL: "https://test.glade.nest" # TODO: change when ready
     volumes:
       - "/home/glade/music/data:/data"
       - "/home/glade/music/music:/music:ro"
