@@ -65,7 +65,9 @@ class Recommendations:
         endpoint: str = "albums/" + id
         response: requests.Response = api_get(endpoint=endpoint, params={})
 
-        with open("album.json", "w+") as jsonf:  # TODO: Remove in production
+        with open(
+            "./offlineplayer/data/album.json", "w+"
+        ) as jsonf:  # TODO: Remove in production
             json.dump(response.json(), jsonf)
 
         return ",".join(response.json()["genres"])
@@ -109,7 +111,7 @@ class Recommendations:
             "last_recommended": time(),
         }
 
-        with open("history.json", "w+") as jsonf:
+        with open("./offlineplayer/data/history.json", "w+") as jsonf:
             if os.path.getsize("history.json") == 0:
                 json.dump([note], jsonf, indent=4)
                 return

@@ -27,7 +27,9 @@ class Search:
 
         response: requests.Response = api_get(endpoint="search", params=params)
 
-        with open("search.json", "w") as jsonf:  # TODO: Remove in production
+        with open(
+            "./offlineplayer/data/search.json", "w"
+        ) as jsonf:  # TODO: Remove in production
             json.dump(response.json(), jsonf, indent=4)
 
         for track in response.json()["tracks"]["items"]:
