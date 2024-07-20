@@ -12,7 +12,7 @@ from pytube import YouTube
 
 PATH: str = "offlineplayer/songs"
 
-logger = logging.getLogger("reccy")
+LOGGER = logging.getLogger("reccy")
 
 
 class Downloader:

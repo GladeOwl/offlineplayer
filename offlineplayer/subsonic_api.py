@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-logger = logging.getLogger("reccy")
+LOGGER = logging.getLogger("reccy")
 
 
 class Subsonic:
@@ -32,6 +32,9 @@ class Subsonic:
 
         if not now_playing["subsonic-response"]["nowPlaying"]:
             return None
+
+        with open("now_playing.json", "w") as jsonf:
+            json.dump(now_playing, jsonf, indent=4)
 
         song_id: dict = now_playing["subsonic-response"]["nowPlaying"]["entry"]["@id"]
         song_info: dict = self.get_api(self.get_song, song_id)
@@ -58,7 +61,7 @@ class Subsonic:
         )
 
         data: dict = xmltodict.parse(response.text)
-        with open("test.json", "w") as jsonf:
+        with open("local_song_info.json", "w") as jsonf:
             json.dump(data, jsonf, indent=4)
         return data
 

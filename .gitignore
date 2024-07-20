@@ -167,3 +167,8 @@ search.json
 rec.json
 test.json
 album.json
+history.json
+local_song_info.json
+now_playing.json
+
+/offlineplayer/songs

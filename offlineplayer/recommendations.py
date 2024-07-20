@@ -9,7 +9,7 @@ from search import Search
 from subsonic_api import SUBSONIC
 from song import Song
 
-logger = logging.getLogger("reccy")
+LOGGER = logging.getLogger("reccy")
 
 
 class Recommendations:
@@ -31,7 +31,7 @@ class Recommendations:
         search_data: dict = self.search_song()
 
         if search_data == None:
-            print("No data found. No recommends.")
+            logging.error("No data found. No recommends.")
             return None
 
         genres: str = self.get_genres(search_data["album_id"])
@@ -109,22 +109,20 @@ class Recommendations:
             "last_recommended": time(),
         }
 
-        if os.path.getsize("history.json") == 0:
-            history: dict = {"recommends": [note]}
-            with open("history.json", "w+") as jsonf:
-                json.dump(history, jsonf, indent=4)
-            return
+        with open("history.json", "w+") as jsonf:
+            if os.path.getsize("history.json") == 0:
+                json.dump([note], jsonf, indent=4)
+                return
 
-        with open("history.json", "w") as jsonf:
-            history: dict = json.load(jsonf)
+            history: list = json.load(jsonf)
 
             found_note: bool = False
-            for _note in history["recommends"]:
+            for _note in history:
                 if _note["name"] == self.song.name:
                     _note = note
                     found_note = True
 
             if not found_note:
-                history["recommends"].append(note)
+                history.append(note)
 
             json.dump(history, jsonf, indent=4)

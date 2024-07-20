@@ -6,7 +6,7 @@ REC_PER_SONG: int = 1
 
 REC: Recommendations = Recommendations(REC_PER_SONG)
 
-logger = logging.getLogger("reccy")
+LOGGER = logging.getLogger("reccy")
 logging.basicConfig(
     filename="recommendations.log",
     encoding="utf-8",
