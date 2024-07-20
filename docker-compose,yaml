@@ -1,0 +1,25 @@
+version: 0.1
+services:
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    user: 1000:1000 # should be owner of volumes
+    ports:
+      - "8081:4533"
+    environment:
+      ND_BASEURL: "https://music.glade.nest"
+    volumes:
+      - "/home/glade/music/data:/data"
+      - "/home/glade/music/music:/music:ro"
+    restart: unless-stopped
+  reccy:
+    container_name: reccy
+    build:
+      context: https://github.com/GladeOwl/offlineplayer.git
+      args:
+        - SSH_PRIVATE_KEY=${SSH_PRIVATE_KEY}
+    depends_on:
+      - navidrome
+    env_file:
+      - "./offlineplayer/.env"
+    restart: unless-stopped
