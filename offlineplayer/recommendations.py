@@ -31,7 +31,7 @@ class Recommendations:
         search_data: dict = self.search_song()
 
         if search_data == None:
-            print("No data found. No recommends.")
+            logging.error("No data found. No recommends.")
             return None
 
         genres: str = self.get_genres(search_data["album_id"])
