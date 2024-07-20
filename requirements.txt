@@ -1,0 +1,10 @@
+requests
+python-dotenv
+pydub
+simpleaudio
+rich
+xmltodict
+youtube-search
+pytube
+mutagen
+moviepy
