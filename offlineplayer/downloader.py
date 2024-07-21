@@ -1,7 +1,6 @@
 import logging
 import os
 from moviepy import editor
-from time import sleep
 
 import mutagen
 from mutagen.easyid3 import EasyID3
@@ -60,7 +59,6 @@ class Downloader:
             return None
 
     def convert_mp4_to_mp3(self, file_path: str) -> None:
-        sleep(1)
         try:
             logging.info("Converting song from .mp4 to .mp3")
             mp4_file: editor.AudioFileClip = editor.AudioFileClip(file_path)
