@@ -7,4 +7,5 @@ services:
       - .env
     restart: unless-stopped
     volumes:
+      - ${SONG_PATH}:/music
       - ${LOG_PATH}:/recommendations.log

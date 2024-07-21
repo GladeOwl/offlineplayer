@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-PATH: str = os.environ["SONG_FOLDER"]
+PATH: str = "/music"
 
 LOGGER = logging.getLogger("reccy")
 
