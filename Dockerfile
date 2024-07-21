@@ -1,5 +1,6 @@
 FROM python:3.11-alpine
-RUN apk add curl ffmpeg
+RUN apk add curl
+RUN apk add --no-cache ffmpeg
 
 WORKDIR /reccy
 
