@@ -1,4 +1,5 @@
 import logging
+import time
 from recommendations import Recommendations
 from downloader import Downloader
 
@@ -23,3 +24,4 @@ if __name__ == "__main__":
                 downloader.start_downloading()
         except Exception:
             print(Exception)
+        time.sleep(1)
