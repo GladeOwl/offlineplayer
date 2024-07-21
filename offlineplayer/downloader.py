@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-PATH: str = "music"
+PATH: str = "/music"
 
 LOGGER = logging.getLogger("reccy")
 
@@ -31,7 +31,7 @@ class Downloader:
             if not song_name:
                 return
 
-            song_path: str = f"./{PATH}/{song_name}.mp4"
+            song_path: str = f"{PATH}/{song_name}.mp4"
 
             self.convert_mp4_to_mp3(file_path=song_path)
             # self.add_file_metadata(song=song)
