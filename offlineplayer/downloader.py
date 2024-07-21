@@ -61,13 +61,16 @@ class Downloader:
 
     def convert_mp4_to_mp3(self, file_path: str) -> None:
         sleep(1)
-
-        logging.info("Converting song from .mp4 to .mp3")
-        mp4_file: editor.AudioFileClip = editor.AudioFileClip(file_path)
-        mp3_path: str = file_path.replace("mp4", "mp3")
-        mp4_file.write_audiofile(mp3_path)
-        mp4_file.close()
-        os.remove(file_path)
+        try:
+            logging.info("Converting song from .mp4 to .mp3")
+            mp4_file: editor.AudioFileClip = editor.AudioFileClip(file_path)
+            mp3_path: str = file_path.replace("mp4", "mp3")
+            mp4_file.write_audiofile(mp3_path)
+            mp4_file.close()
+            os.remove(file_path)
+        except Exception as exc:
+            print(exc)
+            self.convert_mp4_to_mp3(file_path)
 
     def add_file_metadata(self, song: dict) -> None:
         logging.info("Editing file metadata.")
