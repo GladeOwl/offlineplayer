@@ -21,5 +21,5 @@ if __name__ == "__main__":
         if songs != None:
             downloader: Downloader = Downloader(songs=songs)
             downloader.start_downloading()
-    except Exception:
-        print(Exception)
+    except Exception as exc:
+        print(exc)
