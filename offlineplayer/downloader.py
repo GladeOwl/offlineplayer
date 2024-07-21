@@ -69,8 +69,8 @@ class Downloader:
             mp4_file.close()
             os.remove(file_path)
         except Exception as exc:
+            logging.error("MoviePy Error: Could not find the file.")
             print(exc)
-            self.convert_mp4_to_mp3(file_path)
 
     def add_file_metadata(self, song: dict) -> None:
         logging.info("Editing file metadata.")
