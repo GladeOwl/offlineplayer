@@ -2,6 +2,7 @@ import logging
 import time
 from recommendations import Recommendations
 from downloader import Downloader
+from subsonic_api import SUBSONIC
 
 REC_PER_SONG: int = 1
 
@@ -21,5 +22,6 @@ if __name__ == "__main__":
         if songs != None:
             downloader: Downloader = Downloader(songs=songs)
             downloader.start_downloading()
+        SUBSONIC.start_scan()
     except Exception as exc:
         print(exc)
