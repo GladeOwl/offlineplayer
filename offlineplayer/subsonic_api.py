@@ -33,7 +33,7 @@ class Subsonic:
         if not now_playing["subsonic-response"]["nowPlaying"]:
             return None
 
-        with open("./offlineplayer/data/now_playing.json", "w") as jsonf:
+        with open("now_playing.json", "w") as jsonf:
             json.dump(now_playing, jsonf, indent=4)
 
         song_id: dict = now_playing["subsonic-response"]["nowPlaying"]["entry"]["@id"]
@@ -61,7 +61,7 @@ class Subsonic:
         )
 
         data: dict = xmltodict.parse(response.text)
-        with open("./offlineplayer/data/local_song_info.json", "w") as jsonf:
+        with open("local_song_info.json", "w") as jsonf:
             json.dump(data, jsonf, indent=4)
         return data
 
