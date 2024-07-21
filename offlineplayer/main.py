@@ -16,12 +16,10 @@ logging.basicConfig(
 )
 
 if __name__ == "__main__":
-    while True:
-        try:
-            songs: list = REC.get_recommendations()
-            if songs != None:
-                downloader: Downloader = Downloader(songs=songs)
-                downloader.start_downloading()
-        except Exception:
-            print(Exception)
-        time.sleep(1)
+    try:
+        songs: list = REC.get_recommendations()
+        if songs != None:
+            downloader: Downloader = Downloader(songs=songs)
+            downloader.start_downloading()
+    except Exception:
+        print(Exception)
