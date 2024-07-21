@@ -1,9 +1,8 @@
-version: "0.1"
 services:
   reccy:
     container_name: reccy
     build:
       context: .
     env_file:
-      - "./offlineplayer/.env"
+      - .env
     restart: unless-stopped
