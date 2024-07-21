@@ -8,7 +8,7 @@ from mutagen.easyid3 import EasyID3
 from mutagen.id3 import ID3NoHeaderError
 
 from youtube_search import YoutubeSearch
-from pytube import YouTube
+from pytubefix import YouTube
 
 from dotenv import load_dotenv
 

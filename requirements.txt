@@ -4,6 +4,6 @@ pydub
 rich
 xmltodict
 youtube-search
-pytube
+pytubefix
 mutagen
 moviepy

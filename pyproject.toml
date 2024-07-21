@@ -13,9 +13,9 @@ pydub = "^0.25.1"
 rich = {extras = ["all"], version = "^13.7.1"}
 xmltodict = "^0.13.0"
 youtube-search = "^2.1.2"
-pytube = "^15.0.0"
 mutagen = "^1.47.0"
 moviepy = "^1.0.3"
+pytubefix = "^6.4.2"
 
 
 [build-system]
