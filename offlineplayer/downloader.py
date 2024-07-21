@@ -10,7 +10,11 @@ from mutagen.id3 import ID3NoHeaderError
 from youtube_search import YoutubeSearch
 from pytube import YouTube
 
-PATH: str = "offlineplayer/songs"
+from dotenv import load_dotenv
+
+load_dotenv()
+
+PATH: str = os.environ["SONG_FOLDER"]
 
 LOGGER = logging.getLogger("reccy")
 
