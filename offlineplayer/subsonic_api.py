@@ -16,7 +16,7 @@ LOGGER = logging.getLogger("reccy")
 class Subsonic:
     def __init__(self) -> None:
         self.url: str = (
-            "http://navidrome:8085/rest/"  # TODO: change the URL to container name
+            "http://navidrome_test:8085/rest/"  # TODO: change the URL to container name
         )
         self.now: str = "getNowPlaying"
         self.get_song: str = "getSong"
