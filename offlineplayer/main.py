@@ -9,7 +9,7 @@ REC: Recommendations = Recommendations(REC_PER_SONG)
 
 LOGGER = logging.getLogger("reccy")
 logging.basicConfig(
-    filename="recommendations.log",
+    filename="/recommendations.log",
     encoding="utf-8",
     level=logging.INFO,
     format="[%(asctime)s] (%(filename)s) %(levelname)s :: %(message)s",
