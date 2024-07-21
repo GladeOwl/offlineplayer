@@ -1,0 +1,9 @@
+requests
+python-dotenv
+pydub
+rich
+xmltodict
+youtube-search
+pytubefix
+mutagen
+moviepy

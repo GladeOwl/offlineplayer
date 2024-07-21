@@ -163,12 +163,5 @@ cython_debug/
 
 # Local Developer Ignores
 token.json
-search.json
-rec.json
-test.json
-album.json
-history.json
-local_song_info.json
-now_playing.json
-
+/offlineplayer/data
 /offlineplayer/songs

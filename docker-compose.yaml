@@ -1,0 +1,11 @@
+services:
+  reccy:
+    container_name: reccy
+    build:
+      context: .
+    env_file:
+      - .env
+    restart: no
+    volumes:
+      - ${SONG_PATH}:/music
+      - ${LOG_PATH}:/recommendations.log
