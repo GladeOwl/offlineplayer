@@ -34,7 +34,7 @@ class Downloader:
             song_path: str = f"{PATH}/{song_name}.mp4"
 
             self.convert_mp4_to_mp3(file_path=song_path)
-            # self.add_file_metadata(song=song)
+            self.add_file_metadata(song=song)
 
     def search_song(self, song: str) -> str:
         search_string: str = f"{song['name']} {song['artist']}"
@@ -72,7 +72,6 @@ class Downloader:
         file_path: str = ""
         for file in os.listdir(path=PATH):
             if song["name"].lower() in file.lower():
-                print(song["name"], file)
                 file_path = os.path.join(PATH, file)
                 break
 
@@ -82,10 +81,10 @@ class Downloader:
             song_file = mutagen.File(file_path, easy=True)
             song_file.add_tags()
 
-        print(song_file)
-
         song_file["title"] = song["name"]
         song_file["artist"] = song["artist"]
         song_file["album"] = song["album"]
 
         song_file.save()
+
+        logging.info("File Metadata added")
