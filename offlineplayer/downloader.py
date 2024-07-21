@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-PATH: str = "/music"
+PATH: str = "music"
 
 LOGGER = logging.getLogger("reccy")
 
