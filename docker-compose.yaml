@@ -7,4 +7,4 @@ services:
       - .env
     restart: unless-stopped
     volumes:
-      - recommendations.log:recommendations.log
+      - ./recommendations:recommendations
