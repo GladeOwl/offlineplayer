@@ -4,8 +4,6 @@ services:
     container_name: reccy
     build:
       context: .
-    depends_on:
-      - navidrome
     env_file:
       - "./offlineplayer/.env"
     restart: unless-stopped
