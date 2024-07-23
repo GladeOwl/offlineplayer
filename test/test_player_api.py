@@ -25,8 +25,6 @@ def test_get_session_from_api():
 
 def test_get_session_from_class():
     session: Session = PLAYERAPI.get_session()
-    print(session.queue)
-
     assert session != None
 
 
@@ -41,10 +39,17 @@ def test_get_playlists():
 
 def test_get_playlist():
     params: dict = {"userId": PLAYERAPI.user_id}
-    playlist_id: str = "81fa3a83-5fd0-d0ab-705c-fbf40d0e223c"
+    playlist_id: str = "b754a3fd06f8da79cbae74575df78238"
     response: dict = PLAYERAPI.get_api(f"Playlists/{playlist_id}/Items", params=params)
 
     with open("offlineplayer/data/playlist.json", "w+") as jsonf:
         json.dump(response, jsonf, indent=4)
 
     assert response != None
+
+
+# NOTE: The specific playlist should be playing for this test to pass
+def test_active_playlist():
+    reference_id: str = "b754a3fd06f8da79cbae74575df78238"
+    active_id: str = PLAYERAPI.get_active_playlist()
+    assert reference_id == active_id

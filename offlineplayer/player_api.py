@@ -16,7 +16,6 @@ class PlayerAPI:
         self.url: str = os.environ["URL"]
         self.user_id: str = os.environ["USER_ID"]
         self.api_key: str = os.environ["API_KEY"]
-        self.active_playlist_id: str
 
     def get_api(self, endpoint: str, params: dict = None, headers: dict = {}) -> dict:
         headers["X-Emby-Token"] = self.api_key
@@ -51,23 +50,31 @@ class PlayerAPI:
 
         return session
 
-    def get_active_playlist(self) -> None:
+    def get_active_playlist(self) -> str:
         params: dict = {"IncludeItemTypes": "Playlist", "Recursive": "true"}
-        playlists: dict = self.get_api(f"Users/{self.user_id}/Items", params)
+        playlists: dict = self.get_api(f"Users/{self.user_id}/Items", params=params)
         session: Session = self.get_session()
 
         for item in playlists["Items"]:
             if item["ChildCount"] != len(session.queue):
                 continue
 
-            _params: dict = {"userId": self.user_id}
             playlist: dict = self.get_api(
-                f"Playlist/{item['id']}/Items", params=_params
+                f"Playlists/{item['Id']}/Items", params={"userId": self.user_id}
             )
 
             count: int = 0
-            # for playlist_item in playlist["Items"]:
-            #     if playlist_item["Id"] ==
+            for playlist_item in playlist["Items"]:
+                if playlist_item["Id"] in session.queue:
+                    count += 1
+
+            if count == len(session.queue):
+                return item["Id"]
+
+    def scan_library(self) -> dict:
+        return self.get_api("/Library/Refresh")
+
+    # def add_song_to_playlist(self) -> None:
 
 
 PLAYERAPI = PlayerAPI()
