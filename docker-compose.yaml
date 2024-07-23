@@ -8,4 +8,5 @@ services:
     restart: no
     volumes:
       - ${SONG_PATH}:/music
+      - ${CONFIG_PATH}:/config
       - ${LOG_PATH}:/recommendations.log
