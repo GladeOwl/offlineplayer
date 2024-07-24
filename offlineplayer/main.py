@@ -1,6 +1,6 @@
 import logging
 import time
-from recommendations import Recommendations
+from offlineplayer.old_recommendations import Recommendations
 from downloader import Downloader
 from subsonic_api import SUBSONIC
 

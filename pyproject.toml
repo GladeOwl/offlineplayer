@@ -18,6 +18,9 @@ moviepy = "^1.0.3"
 pytubefix = "^6.4.2"
 
 
+[tool.poetry.group.dev.dependencies]
+coverage = "^7.6.0"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

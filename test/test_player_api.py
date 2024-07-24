@@ -53,3 +53,6 @@ def test_active_playlist():
     reference_id: str = "b754a3fd06f8da79cbae74575df78238"
     active_id: str = PLAYERAPI.get_active_playlist()
     assert reference_id == active_id
+
+
+# def test_starred_song():

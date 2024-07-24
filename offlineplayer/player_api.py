@@ -26,7 +26,7 @@ class PlayerAPI:
 
         if response.status_code != 200:
             logging.error(
-                f"API Status Code: {response.status_code}. Please check the issue."
+                f"Player API Status Code: {response.status_code}. Please check the issue."
             )
             return None
 
@@ -34,7 +34,13 @@ class PlayerAPI:
 
     def get_session(self) -> Session:
         session_data: dict = self.get_api("Sessions")
+
         if session_data == None:
+            logging.error("Unable to get session data.")
+            return None
+
+        if session[0]["NowPlayingItem"] == None:
+            logging.debug("No song is playing.")
             return None
 
         song_data: dict = session_data[0]["NowPlayingItem"]
