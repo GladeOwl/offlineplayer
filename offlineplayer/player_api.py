@@ -1,10 +1,10 @@
 import os
 import requests
 import logging
-
-from session import Session
-from song import Song
 from dotenv import load_dotenv
+
+from classes.session import Session
+from classes.song import Song
 
 load_dotenv()
 
@@ -26,7 +26,7 @@ class PlayerAPI:
 
         if response.status_code != 200:
             logging.error(
-                f"API Status Code: {response.status_code}. Please check the issue."
+                f"Player API Status Code: {response.status_code}. Please check the issue."
             )
             return None
 
@@ -34,19 +34,26 @@ class PlayerAPI:
 
     def get_session(self) -> Session:
         session_data: dict = self.get_api("Sessions")
+
         if session_data == None:
+            logging.error("Unable to get session data.")
+            return None
+
+        if session_data[0]["NowPlayingItem"] == None:
+            logging.debug("No song is playing.")
             return None
 
         song_data: dict = session_data[0]["NowPlayingItem"]
 
         song: Song = Song()
+        song.player_id = song_data["Id"]
         song.name = song_data["Name"]
         song.artist = song_data["Artists"]
         song.album = song_data["Album"]
 
         session: Session = Session()
         session.song = song
-        session.queue = [x["Id"] for x in session_data[0]["NowPlayingQueue"]]
+        session.queue = [item["Id"] for item in session_data[0]["NowPlayingQueue"]]
 
         return session
 

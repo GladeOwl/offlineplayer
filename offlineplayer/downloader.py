@@ -6,38 +6,38 @@ from moviepy import editor
 import mutagen
 from mutagen.easyid3 import EasyID3
 from mutagen.id3 import ID3NoHeaderError
-
 from youtube_search import YoutubeSearch
 from pytubefix import YouTube
-
 from dotenv import load_dotenv
+
+from classes.recommendation import Recommendation
+from classes.song import Song
 
 load_dotenv()
 
-PATH: str = "/music"
+FOLDER: str = "/music"
+ROOT: str = os.path.dirname(os.path.realpath(__file__))
+PATH: str = os.path.join(ROOT + FOLDER)
 
 LOGGER = logging.getLogger("reccy")
 
 
 class Downloader:
-    def __init__(self, songs: list) -> None:
-        self.songs: list = songs
+    def download_songs(self, songs: list) -> None:
+        for song in songs:
+            url: str = self.get_url(song)
 
-    def start_downloading(self) -> None:
-        for song in self.songs:
-            url: str = self.search_song(song)
-
-            song_name: str = self.download_song(url=url)
+            song_name: str = self.download(url=url)
             if not song_name:
-                return
+                continue
 
-            song_path: str = f"{PATH}/{song_name}.mp4"
+            song_path: str = os.path.join(PATH, f"{song_name}.mp4")
 
             self.convert_mp4_to_mp3(file_path=song_path)
             self.add_file_metadata(song=song)
 
-    def search_song(self, song: str) -> str:
-        search_string: str = f"{song['name']} {song['artist']}"
+    def get_url(self, song: Song) -> str:
+        search_string: str = f"{song.name} {song.artist_name}"
         results: list = YoutubeSearch(search_string, max_results=1).to_dict()
 
         if len(results) == 0:
@@ -46,7 +46,7 @@ class Downloader:
 
         return results[0]["url_suffix"]
 
-    def download_song(self, url: str) -> str:
+    def download(self, url: str) -> str:
         try:
             yt: YouTube = YouTube(url=url)
             stream = yt.streams.get_audio_only()
@@ -56,7 +56,7 @@ class Downloader:
             return yt.title
         except Exception as exc:
             logging.error(f"Downloaded failed: {exc}")
-            print(f"Error {exc}")
+            print(f"Download Error :: {exc}")
             return None
 
     def convert_mp4_to_mp3(self, file_path: str) -> None:
@@ -71,7 +71,7 @@ class Downloader:
 
         file_path: str = ""
         for file in os.listdir(path=PATH):
-            if song["name"].lower() in file.lower():
+            if song.name.lower() in file.lower():
                 file_path = os.path.join(PATH, file)
                 break
 
@@ -81,10 +81,13 @@ class Downloader:
             song_file = mutagen.File(file_path, easy=True)
             song_file.add_tags()
 
-        song_file["title"] = song["name"]
-        song_file["artist"] = song["artist"]
-        song_file["album"] = song["album"]
+        song_file["title"] = song.name
+        song_file["artist"] = song.artist_name
+        song_file["album"] = song.album_name
 
         song_file.save()
 
         logging.info("File Metadata added")
+
+
+DOWNLOADER = Downloader()

@@ -1,4 +1,4 @@
-from song import Song
+from classes.song import Song
 
 
 class Session:

@@ -1,12 +1,14 @@
 import logging
-import time
+
+from spotify_api import SPOTIFYAPI
+from player_api import PLAYERAPI
+from downloader import DOWNLOADER
 from recommendations import Recommendations
-from downloader import Downloader
-from subsonic_api import SUBSONIC
+from classes.session import Session
+from classes.song import Song
 
-REC_PER_SONG: int = 1
+REC_LIMIT: int = 1
 
-REC: Recommendations = Recommendations(REC_PER_SONG)
 
 LOGGER = logging.getLogger("reccy")
 logging.basicConfig(
@@ -16,12 +18,22 @@ logging.basicConfig(
     format="[%(asctime)s] (%(filename)s) %(levelname)s :: %(message)s",
 )
 
+
+def main():
+    reccy: Recommendations = Recommendations(limit=REC_LIMIT)
+    session: Session = PLAYERAPI.get_session()
+    song: Song = SPOTIFYAPI.get_song(session.song)
+    songs: list = reccy.get_recommendations(song)
+
+    if songs == None:
+        logging.error(
+            "No songs were found for downloading. Something must've gone wrong!"
+        )
+        return
+
+    DOWNLOADER.download_songs(songs=songs)
+
+
 if __name__ == "__main__":
-    try:
-        songs: list = REC.get_recommendations()
-        if songs != None:
-            downloader: Downloader = Downloader(songs=songs)
-            downloader.start_downloading()
-        SUBSONIC.start_scan()
-    except Exception as exc:
-        print(exc)
+    logging.info("Starting reccy!")
+    main()
