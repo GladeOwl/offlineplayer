@@ -45,6 +45,10 @@ class PlayerAPI:
 
         song_data: dict = session_data[0]["NowPlayingItem"]
 
+        if not self.is_song_favorited(song_data["Id"]):
+            logging.debug("Current song not favorited. Skipping it.")
+            return None
+
         song: Song = Song()
         song.player_id = song_data["Id"]
         song.name = song_data["Name"]
@@ -56,6 +60,11 @@ class PlayerAPI:
         session.queue = [item["Id"] for item in session_data[0]["NowPlayingQueue"]]
 
         return session
+
+    def is_song_favorited(self, id: str) -> bool:
+        params: dict = {"userId": PLAYERAPI.user_id}
+        song: dict = PLAYERAPI.get_api(f"Items/{id}", params=params)
+        return song["UserData"]["IsFavorite"]
 
     def get_active_playlist(self) -> str:
         params: dict = {"IncludeItemTypes": "Playlist", "Recursive": "true"}
