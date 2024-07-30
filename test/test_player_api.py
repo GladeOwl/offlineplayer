@@ -58,7 +58,11 @@ def test_active_playlist():
     assert reference_id == active_id
 
 
-def test_get_current_song():
-    session: Session = PLAYERAPI.get_session()
-    assert session.song != None
-    print(f"{session.song.name} :: {session.song.album} :: {session.song.artist}")
+def test_get_song_from_api():
+    session: dict = PLAYERAPI.get_api("Sessions")
+    song_id: str = session[0]["NowPlayingItem"]["Id"]
+
+    params: dict = {"userId": PLAYERAPI.user_id}
+    song: dict = PLAYERAPI.get_api(f"Items/{song_id}", params=params)
+
+    assert song != None

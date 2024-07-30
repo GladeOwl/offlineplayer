@@ -21,8 +21,15 @@ logging.basicConfig(
 
 def main():
     reccy: Recommendations = Recommendations(limit=REC_LIMIT)
+
     session: Session = PLAYERAPI.get_session()
+    if session == None:
+        return
+
     song: Song = SPOTIFYAPI.get_song(session.song)
+    if song == None:
+        return
+
     songs: list = reccy.get_recommendations(song)
 
     if songs == None:
