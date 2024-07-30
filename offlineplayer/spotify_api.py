@@ -3,10 +3,10 @@ import requests
 import urllib
 import json
 import logging
+from dotenv import load_dotenv
 
 from api_token import TOKEN
 from classes.song import Song
-from dotenv import load_dotenv
 
 load_dotenv()
 LOGGER = logging.getLogger("reccy")

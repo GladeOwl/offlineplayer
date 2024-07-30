@@ -1,10 +1,10 @@
 import os
 import requests
 import logging
+from dotenv import load_dotenv
 
 from classes.session import Session
 from classes.song import Song
-from dotenv import load_dotenv
 
 load_dotenv()
 

@@ -1,7 +1,6 @@
 import os
 import sys
 import json
-import logging
 
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), "../offlineplayer"))
