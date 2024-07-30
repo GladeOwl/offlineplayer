@@ -5,18 +5,19 @@ import json
 import logging
 
 from api_token import TOKEN
-from helper import api_get
-from song import Song
+from classes.song import Song
+from dotenv import load_dotenv
 
+load_dotenv()
 LOGGER = logging.getLogger("reccy")
 
 
 class Spotify_API:
-    def __init__(self, song: Song) -> None:
+    def __init__(self) -> None:
         self.url: str = os.environ["SPOTIFY_URL"]
         self.token = TOKEN.token
 
-    def get_api(self, endpoint: str, params: dict) -> requests.Response:
+    def get_api(self, endpoint: str, params: dict = {}) -> dict:
         headers: dict = {"Authorization": f"Bearer {TOKEN.token}"}
 
         response: requests.Response = requests.get(
@@ -38,18 +39,15 @@ class Spotify_API:
         }
         return urllib.parse.urlencode(data)
 
-    def get_song(self, song: Song) -> dict:
+    def get_song(self, song: Song) -> Song:
         q: str = self.encode_params(song)
         params: dict = {"q": q, "type": song.type, "limit": 10}
 
         logging.info(f"Looking for {song.name} with params: {q}")
 
-        response: requests.Response = self.get_api(endpoint="search", params=params)
+        search_data: dict = self.get_api(endpoint="search", params=params)
 
-        with open("search.json", "w") as jsonf:  # TODO: Remove in production
-            json.dump(response.json(), jsonf, indent=4)
-
-        for track in response.json()["tracks"]["items"]:
+        for track in search_data["tracks"]["items"]:
             if (
                 track["name"].lower() in song.name.lower()
                 and track["album"]["name"].lower() in song.album.lower()
@@ -59,14 +57,22 @@ class Spotify_API:
                     f"Local - {song.name} by {song.artist} :: Spotify - {track['name']} by {track['artists'][0]['name']} :: {track['external_urls']['spotify']}"
                 )
 
-                return {
-                    "song_id": track["id"],
-                    "artists_id": track["artists"][0]["id"],
-                    "album_id": track["album"]["id"],
-                }
+                song.spotify_id = track["id"]
+                song.artist_id = track["artists"][0]["id"]
+                song.album_id = track["album"]["id"]
+                song.genres = self.get_genres(song.spotify_id)
+
+                return song
 
         logging.error(f"No song found matching the name : {q}")
         return None
+
+    def get_genres(self, id: str) -> list:
+        response: dict = self.get_api(endpoint=f"albums/{id}")
+        if response == None:
+            logging.error("No genres found.")
+            return None
+        return response["genres"]
 
 
 SPOTIFYAPI = Spotify_API()

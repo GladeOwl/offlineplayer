@@ -2,8 +2,8 @@ import os
 import requests
 import logging
 
-from session import Session
-from song import Song
+from classes.session import Session
+from classes.song import Song
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -39,20 +39,21 @@ class PlayerAPI:
             logging.error("Unable to get session data.")
             return None
 
-        if session[0]["NowPlayingItem"] == None:
+        if session_data[0]["NowPlayingItem"] == None:
             logging.debug("No song is playing.")
             return None
 
         song_data: dict = session_data[0]["NowPlayingItem"]
 
         song: Song = Song()
+        song.player_id = song_data["Id"]
         song.name = song_data["Name"]
         song.artist = song_data["Artists"]
         song.album = song_data["Album"]
 
         session: Session = Session()
         session.song = song
-        session.queue = [x["Id"] for x in session_data[0]["NowPlayingQueue"]]
+        session.queue = [item["Id"] for item in session_data[0]["NowPlayingQueue"]]
 
         return session
 

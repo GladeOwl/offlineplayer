@@ -3,25 +3,59 @@ import requests
 
 from spotify_api import SPOTIFYAPI
 from player_api import PLAYERAPI
-from session import Session
-from song import Song
+from offlineplayer.classes.recommendation import Recommendation
+from classes.session import Session
+from classes.song import Song
 
 LOGGER = logging.getLogger("reccy")
 
 
-class Recommnedations:
-    def __init__(self) -> None:
+class Recommendations:
+    def __init__(self, limit: int = 1) -> None:
         self.song: Song
+        self.session: Session
+        self.limit: int = limit
 
-    def get_recommendations(self) -> None:
-        session: Session = PLAYERAPI.get_session()
+    def start_process(self) -> None:
+        self.session = PLAYERAPI.get_session()
 
-        if session == None:
+        if self.session == None:
             return None
 
         # TODO: Only recommend if song is favourited.
-        self.song = session.song
-        search_data: dict = self.search_song()
+        self.song = SPOTIFYAPI.get_song(self.session.song)
 
-    def search_song(self) -> None: ...
-    def get_genres(self) -> None: ...
+        if self.song == None:
+            return None
+
+    def get_recommendations(self, song: Song) -> list[Recommendation]:
+        genres: str = ",".join(song.genres)
+        logging.info(f"Logging for recommendations. Genres: {genres}")
+
+        params: dict = {
+            "seed_tracks": song.spotify_id,
+            "seed_artists": song.artist_id,
+            "seed_genres": genres,
+            "limit": self.limit,
+        }
+
+        response: requests.Response = SPOTIFYAPI.get_api(
+            endpoint="recommendations", params=params
+        )
+
+        recommendations: list = []
+
+        for recommendation in response["tracks"]:
+            song: Recommendation = Recommendation()
+            song.name = recommendation["name"]
+            song.artist_name = recommendation["artists"][0]["name"]
+            song.artist_id = recommendation["artist"][0]["id"]
+            song.album_name = recommendation["album"]["name"]
+            song.album_id = recommendation["album"]["id"]
+
+            recommendations.append(song)
+
+        return recommendations
+
+
+RECOMMENDATIONS = Recommendations()

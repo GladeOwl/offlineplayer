@@ -1,13 +1,14 @@
 import os
 import sys
 import json
+import pytest
 
 sys.path.append(
     os.path.abspath(os.path.join(os.path.dirname(__file__), "../offlineplayer"))
 )
 
 from player_api import PLAYERAPI
-from session import Session
+from classes.session import Session
 
 
 def test_api_ping():
@@ -48,11 +49,16 @@ def test_get_playlist():
     assert response != None
 
 
-# NOTE: The specific playlist should be playing for this test to pass
+@pytest.mark.xfail(
+    reason="The specific playlist should be playing for this test to pass"
+)
 def test_active_playlist():
     reference_id: str = "b754a3fd06f8da79cbae74575df78238"
     active_id: str = PLAYERAPI.get_active_playlist()
     assert reference_id == active_id
 
 
-# def test_starred_song():
+def test_get_current_song():
+    session: Session = PLAYERAPI.get_session()
+    assert session.song != None
+    print(f"{session.song.name} :: {session.song.album} :: {session.song.artist}")
