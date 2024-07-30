@@ -3,7 +3,7 @@ import requests
 
 from spotify_api import SPOTIFYAPI
 from player_api import PLAYERAPI
-from offlineplayer.classes.recommendation import Recommendation
+from classes.recommendation import Recommendation
 from classes.session import Session
 from classes.song import Song
 
@@ -11,7 +11,7 @@ LOGGER = logging.getLogger("reccy")
 
 
 class Recommendations:
-    def __init__(self, limit: int = 1) -> None:
+    def __init__(self, limit: int = 10) -> None:
         self.song: Song
         self.session: Session
         self.limit: int = limit
@@ -49,7 +49,7 @@ class Recommendations:
             song: Recommendation = Recommendation()
             song.name = recommendation["name"]
             song.artist_name = recommendation["artists"][0]["name"]
-            song.artist_id = recommendation["artist"][0]["id"]
+            song.artist_id = recommendation["artists"][0]["id"]
             song.album_name = recommendation["album"]["name"]
             song.album_id = recommendation["album"]["id"]
 
