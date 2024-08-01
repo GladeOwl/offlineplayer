@@ -1,12 +1,14 @@
 import logging
+import traceback
+
 from time import sleep
 
 from spotify_api import SPOTIFYAPI
 from player_api import PLAYERAPI
 from downloader import DOWNLOADER
-from recommendations import Recommendations
-from classes.session import Session
-from classes.song import Song
+from recommendations import get_recommendations
+from models.session import Session
+from models.song import Song
 
 REC_LIMIT: int = 1
 
@@ -21,17 +23,14 @@ logging.basicConfig(
 
 
 def main():
-    reccy: Recommendations = Recommendations(limit=REC_LIMIT)
-
-    session: Session = PLAYERAPI.get_session()
-    if session == None:
-        return
+    try:
+        session: Session = PLAYERAPI.get_session()
+        PLAYERAPI.get_active_playlist()
+    except Exception as exc:
+        raise exc
 
     song: Song = SPOTIFYAPI.get_song(session.song)
-    if song == None:
-        return
-
-    songs: list = reccy.get_recommendations(song)
+    songs: list = get_recommendations(song, REC_LIMIT)
 
     for song in songs:
         DOWNLOADER.download_songs(song=song)
@@ -46,3 +45,4 @@ if __name__ == "__main__":
         main()
     except Exception as exc:
         print(exc)
+        traceback.print_exc()

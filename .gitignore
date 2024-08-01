@@ -162,6 +162,7 @@ cython_debug/
 #.idea
 
 # Local Developer Ignores
+.vscode
 token.json
 /offlineplayer/data
 /offlineplayer/songs

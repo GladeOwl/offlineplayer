@@ -10,8 +10,8 @@ from youtube_search import YoutubeSearch
 from pytubefix import YouTube
 from dotenv import load_dotenv
 
-from classes.recommendation import Recommendation
-from classes.song import Song
+from models.recommendation import Recommendation
+from models.song import Song
 
 load_dotenv()
 
@@ -57,11 +57,14 @@ class Downloader:
             return None
 
     def convert_mp4_to_mp3(self, file_path: str) -> None:
-        mp4_file: editor.AudioFileClip = editor.AudioFileClip(file_path)
-        mp3_path: str = file_path.replace("mp4", "mp3")
-        mp4_file.write_audiofile(mp3_path)
-        mp4_file.close()
-        os.remove(file_path)
+        try:
+            with editor.AudioFileClip(filename=file_path) as mp4:
+                mp3_path: str = file_path.replace("mp4", "mp3")
+                mp4.write_audiofile(mp3_path)
+            os.remove(file_path)
+        except Exception as exc:
+            logging.error(f"Could not find the song :: {exc}")
+            raise Exception
 
     def add_file_metadata(self, song: Song) -> None:
         logging.info("Editing file metadata.")

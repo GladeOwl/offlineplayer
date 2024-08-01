@@ -5,7 +5,7 @@ from urllib.parse import quote
 
 
 from offlineplayer.player_api import PLAYERAPI
-from offlineplayer.classes.session import Session
+from offlineplayer.models.session import Session
 
 
 def test_api_ping():

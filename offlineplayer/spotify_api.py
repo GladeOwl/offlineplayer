@@ -6,7 +6,7 @@ import logging
 from dotenv import load_dotenv
 
 from api_token import TOKEN
-from classes.song import Song
+from models.song import Song
 
 load_dotenv()
 LOGGER = logging.getLogger("reccy")
@@ -64,7 +64,7 @@ class Spotify_API:
                 return song
 
         logging.error(f"No song found matching the name : {q}")
-        return None
+        raise Exception(f"No song found matching the name : {q}")
 
     def get_genres(self, id: str) -> list:
         response: dict = self.get_api(endpoint=f"albums/{id}")
