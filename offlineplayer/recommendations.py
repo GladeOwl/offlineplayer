@@ -11,7 +11,6 @@ LOGGER = logging.getLogger("reccy")
 
 class Recommendations:
     def __init__(self, limit: int = 10) -> None:
-        self.song: Song
         self.limit: int = limit
 
     def get_recommendations(self, song: Song) -> list[Recommendation]:

@@ -62,7 +62,7 @@ class PlayerAPI:
         return session
 
     def is_song_favorited(self, id: str) -> bool:
-        params: dict = {"userId": PLAYERAPI.user_id}
+        params: dict = {"userId": self.user_id}
         song: dict = PLAYERAPI.get_api(f"Items/{id}", params=params)
         return song["UserData"]["IsFavorite"]
 
