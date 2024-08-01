@@ -129,6 +129,10 @@ class PlayerAPI:
         params = {"userId": self.user_id, "ids": song_id}
         playlist: dict = self.get_active_playlist()
 
+        logging.info(
+            f"Adding song {song.name} ({song_id}) to playlist {playlist['name']} ({playlist['Id']})"
+        )
+
         try:
             self.api(f"Playlists/{playlist['Id']}/Items", params=params)
             logging.info(f"Added {song.name} to {playlist['Name']}")
