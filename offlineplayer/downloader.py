@@ -15,9 +15,7 @@ from classes.song import Song
 
 load_dotenv()
 
-FOLDER: str = "/music"
-ROOT: str = os.path.dirname(os.path.realpath(__file__))
-PATH: str = os.path.join(ROOT + FOLDER)
+FOLDER: str = os.environ["INTERNAL_SONG_PATH"]
 
 LOGGER = logging.getLogger("reccy")
 
@@ -31,7 +29,7 @@ class Downloader:
             if not song_name:
                 continue
 
-            song_path: str = os.path.join(PATH, f"{song_name}.mp4")
+            song_path: str = os.path.join(FOLDER, f"{song_name}.mp4")
 
             self.convert_mp4_to_mp3(file_path=song_path)
             self.add_file_metadata(song=song)
@@ -51,7 +49,7 @@ class Downloader:
             yt: YouTube = YouTube(url=url)
             stream = yt.streams.get_audio_only()
             logging.info(f"Downloading {yt.title} . . .")
-            stream.download(output_path=PATH)
+            stream.download(output_path=FOLDER)
             logging.info(f"Finished Downloading {yt.title}")
             return yt.title
         except Exception as exc:
@@ -70,9 +68,9 @@ class Downloader:
         logging.info("Editing file metadata.")
 
         file_path: str = ""
-        for file in os.listdir(path=PATH):
+        for file in os.listdir(path=FOLDER):
             if song.name.lower() in file.lower():
-                file_path = os.path.join(PATH, file)
+                file_path = os.path.join(FOLDER, file)
                 break
 
         try:

@@ -39,9 +39,9 @@ class PlayerAPI:
             logging.error("Unable to get session data.")
             return None
 
-        if session_data[0]["NowPlayingItem"] == None:
+        if "NowPlayingItem" not in session_data[0].keys():
             logging.debug("No song is playing.")
-            return None
+            raise Exception("No song is playing")
 
         song_data: dict = session_data[0]["NowPlayingItem"]
 

@@ -43,4 +43,7 @@ def main():
 
 if __name__ == "__main__":
     logging.info("Starting reccy!")
-    main()
+    try:
+        main()
+    except Exception as exc:
+        print(exc)

@@ -47,9 +47,6 @@ class Spotify_API:
 
         search_data: dict = self.get_api(endpoint="search", params=params)
 
-        with open("offlineplayer/data/raw_search1.json", "w") as jsonf:
-            json.dump(search_data, jsonf, indent=4)
-
         for track in search_data["tracks"]["items"]:
             if (
                 track["name"].lower() in song.name.lower()
@@ -71,8 +68,6 @@ class Spotify_API:
 
     def get_genres(self, id: str) -> list:
         response: dict = self.get_api(endpoint=f"albums/{id}")
-        with open("offlineplayer/data/raw_albums1.json", "w") as jsonf:
-            json.dump(response, jsonf, indent=4)
 
         if response == None:
             logging.error("No genres found.")
