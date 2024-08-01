@@ -1,4 +1,5 @@
 import logging
+from time import sleep
 
 from spotify_api import SPOTIFYAPI
 from player_api import PLAYERAPI
@@ -32,13 +33,11 @@ def main():
 
     songs: list = reccy.get_recommendations(song)
 
-    if songs == None:
-        logging.error(
-            "No songs were found for downloading. Something must've gone wrong!"
-        )
-        return
-
-    DOWNLOADER.download_songs(songs=songs)
+    for song in songs:
+        DOWNLOADER.download_songs(song=song)
+        PLAYERAPI.scan_library()
+        sleep(2)  # give time to scan
+        PLAYERAPI.add_song_to_playlist(song=song)
 
 
 if __name__ == "__main__":

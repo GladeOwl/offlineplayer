@@ -21,18 +21,17 @@ LOGGER = logging.getLogger("reccy")
 
 
 class Downloader:
-    def download_songs(self, songs: list) -> None:
-        for song in songs:
-            url: str = self.get_url(song)
+    def download_songs(self, song: Song) -> None:
+        url: str = self.get_url(song)
 
-            song_name: str = self.download(url=url)
-            if not song_name:
-                continue
+        song_name: str = self.download(url=url)
+        if not song_name:
+            return None
 
-            song_path: str = os.path.join(FOLDER, f"{song_name}.mp4")
+        song_path: str = os.path.join(FOLDER, f"{song_name}.mp4")
 
-            self.convert_mp4_to_mp3(file_path=song_path)
-            self.add_file_metadata(song=song)
+        self.convert_mp4_to_mp3(file_path=song_path)
+        self.add_file_metadata(song=song)
 
     def get_url(self, song: Song) -> str:
         search_string: str = f"{song.name} {song.artist_name}"
@@ -64,7 +63,7 @@ class Downloader:
         mp4_file.close()
         os.remove(file_path)
 
-    def add_file_metadata(self, song: dict) -> None:
+    def add_file_metadata(self, song: Song) -> None:
         logging.info("Editing file metadata.")
 
         file_path: str = ""
@@ -72,6 +71,10 @@ class Downloader:
             if song.name.lower() in file.lower():
                 file_path = os.path.join(FOLDER, file)
                 break
+
+        if file_path == "":
+            logging.error(f"Couldn't find the file for song {song.name}")
+            raise
 
         try:
             song_file = EasyID3(file_path)
