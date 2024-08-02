@@ -1,11 +1,14 @@
 import logging
+import traceback
+
+from time import sleep
 
 from spotify_api import SPOTIFYAPI
 from player_api import PLAYERAPI
 from downloader import DOWNLOADER
-from recommendations import Recommendations
-from classes.session import Session
-from classes.song import Song
+from recommendations import get_recommendations
+from models.session import Session
+from models.song import Song
 
 REC_LIMIT: int = 1
 
@@ -20,27 +23,26 @@ logging.basicConfig(
 
 
 def main():
-    reccy: Recommendations = Recommendations(limit=REC_LIMIT)
-
-    session: Session = PLAYERAPI.get_session()
-    if session == None:
-        return
+    try:
+        session: Session = PLAYERAPI.get_session()
+        PLAYERAPI.get_active_playlist()
+    except Exception as exc:
+        raise exc
 
     song: Song = SPOTIFYAPI.get_song(session.song)
-    if song == None:
-        return
+    songs: list = get_recommendations(song, REC_LIMIT)
 
-    songs: list = reccy.get_recommendations(song)
-
-    if songs == None:
-        logging.error(
-            "No songs were found for downloading. Something must've gone wrong!"
-        )
-        return
-
-    DOWNLOADER.download_songs(songs=songs)
+    for song in songs:
+        DOWNLOADER.download_songs(song=song)
+        PLAYERAPI.scan_library()
+        sleep(2)  # give time to scan
+        PLAYERAPI.add_song_to_playlist(song=song)
 
 
 if __name__ == "__main__":
     logging.info("Starting reccy!")
-    main()
+    try:
+        main()
+    except Exception as exc:
+        print(exc)
+        traceback.print_exc()

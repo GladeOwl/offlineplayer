@@ -7,6 +7,6 @@ services:
       - .env
     restart: no
     volumes:
-      - ${SONG_PATH}:/music
+      - ${SONG_PATH}:${INTERNAL_SONG_PATH}
       - ${CONFIG_PATH}:/config
       - ${LOG_PATH}:/recommendations.log

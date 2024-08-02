@@ -10,31 +10,28 @@ from youtube_search import YoutubeSearch
 from pytubefix import YouTube
 from dotenv import load_dotenv
 
-from classes.recommendation import Recommendation
-from classes.song import Song
+from models.recommendation import Recommendation
+from models.song import Song
 
 load_dotenv()
 
-FOLDER: str = "/music"
-ROOT: str = os.path.dirname(os.path.realpath(__file__))
-PATH: str = os.path.join(ROOT + FOLDER)
+FOLDER: str = os.environ["INTERNAL_SONG_PATH"]
 
 LOGGER = logging.getLogger("reccy")
 
 
 class Downloader:
-    def download_songs(self, songs: list) -> None:
-        for song in songs:
-            url: str = self.get_url(song)
+    def download_songs(self, song: Song) -> None:
+        url: str = self.get_url(song)
 
-            song_name: str = self.download(url=url)
-            if not song_name:
-                continue
+        song_name: str = self.download(url=url)
+        if not song_name:
+            return None
 
-            song_path: str = os.path.join(PATH, f"{song_name}.mp4")
+        song_path: str = os.path.join(FOLDER, f"{song_name}.mp4")
 
-            self.convert_mp4_to_mp3(file_path=song_path)
-            self.add_file_metadata(song=song)
+        self.convert_mp4_to_mp3(file_path=song_path)
+        self.add_file_metadata(song=song)
 
     def get_url(self, song: Song) -> str:
         search_string: str = f"{song.name} {song.artist_name}"
@@ -51,7 +48,7 @@ class Downloader:
             yt: YouTube = YouTube(url=url)
             stream = yt.streams.get_audio_only()
             logging.info(f"Downloading {yt.title} . . .")
-            stream.download(output_path=PATH)
+            stream.download(output_path=FOLDER)
             logging.info(f"Finished Downloading {yt.title}")
             return yt.title
         except Exception as exc:
@@ -60,20 +57,27 @@ class Downloader:
             return None
 
     def convert_mp4_to_mp3(self, file_path: str) -> None:
-        mp4_file: editor.AudioFileClip = editor.AudioFileClip(file_path)
-        mp3_path: str = file_path.replace("mp4", "mp3")
-        mp4_file.write_audiofile(mp3_path)
-        mp4_file.close()
-        os.remove(file_path)
+        try:
+            with editor.AudioFileClip(filename=file_path) as mp4:
+                mp3_path: str = file_path.replace("mp4", "mp3")
+                mp4.write_audiofile(mp3_path)
+            os.remove(file_path)
+        except Exception as exc:
+            logging.error(f"Could not find the song :: {exc}")
+            raise Exception
 
-    def add_file_metadata(self, song: dict) -> None:
+    def add_file_metadata(self, song: Song) -> None:
         logging.info("Editing file metadata.")
 
         file_path: str = ""
-        for file in os.listdir(path=PATH):
+        for file in os.listdir(path=FOLDER):
             if song.name.lower() in file.lower():
-                file_path = os.path.join(PATH, file)
+                file_path = os.path.join(FOLDER, file)
                 break
+
+        if file_path == "":
+            logging.error(f"Couldn't find the file for song {song.name}")
+            raise
 
         try:
             song_file = EasyID3(file_path)
